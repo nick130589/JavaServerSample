@@ -1,0 +1,16 @@
+<html>
+    <head>
+        <meta CHARSET="UTF-8"/>
+    </head>
+    <form action="/page.html" method="post">
+        Login: <input type="text" name="message"/>
+        <input type="submit" value="Ok">
+    </form>
+    <body>
+        <p> Message: ${message}</p>
+        <p>Method: ${method}</p>
+        <p>URL: ${URL}</p>
+        <p>SessionId: ${sessionId}</p>
+        <p>Parameters: ${parameters}</p>
+    </body>
+</html>
