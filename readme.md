@@ -1,0 +1,1 @@
+Simple web server according to stepic.org course on implementing web service in Java
