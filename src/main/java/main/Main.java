@@ -2,6 +2,7 @@ package main;
 
 import accounts.AccountService;
 import accounts.UserProfile;
+import chat.WebSocketChatServlet;
 import dbService.DbService;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
@@ -21,27 +22,28 @@ public class Main {
     public static void main(String[] args) throws Exception {
         DbService dbService = new DbService();
         dbService.printConnectionInfo();
-        AccountService accountService = new AccountService(dbService);
 
-        //accountService.addNewUser(new UserProfile("admin"));
-        //accountService.addNewUser(new UserProfile("test"));
-        MirrorServlet mirrorServlet = new MirrorServlet();
+        Server server = new Server(8080);
+        AccountService accountService = new AccountService(dbService);
 
 
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
-        context.addServlet(new ServletHolder(mirrorServlet), "/mirror");
+
+        context.addServlet(new ServletHolder(new MirrorServlet()), "/mirror");
         context.addServlet(new ServletHolder(new UsersServlet(accountService)), "/api/v1/users");
         context.addServlet(new ServletHolder(new SessionsServlet(accountService)), "/api/v1/sessions");
         context.addServlet(new ServletHolder(new SignUpServlet(accountService)), "/signup");
         context.addServlet(new ServletHolder(new SignInServlet(accountService)), "/signin");
+        context.addServlet(new ServletHolder(new WebSocketChatServlet()), "/chat");
 
         ResourceHandler resourceHandler = new ResourceHandler();
+        resourceHandler.setDirectoriesListed(true);
         resourceHandler.setResourceBase("public_html");
 
         HandlerList handlers = new HandlerList();
         handlers.setHandlers(new Handler[]{resourceHandler, context});
 
-        Server server = new Server(8080);
+
         server.setHandler(handlers);
 
         server.start();
