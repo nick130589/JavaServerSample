@@ -4,6 +4,7 @@ import accounts.AccountService;
 import accounts.UserProfile;
 
 import com.google.gson.Gson;
+import dbService.DbException;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -52,18 +53,21 @@ public class SessionsServlet extends HttpServlet{
             return;
         }
 
-        UserProfile userProfile = accountService.getUserByLogin(login);
-        if (userProfile == null || !userProfile.getPass().equals(pass)){
-            response.setContentType("text/html;charset=utf-8");
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return;
-        }
+        try {
+            UserProfile userProfile = accountService.getUserByLogin(login);
+            if (userProfile == null || !userProfile.getPass().equals(pass)){
+                response.setContentType("text/html;charset=utf-8");
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                return;
+            }
 
-        accountService.addSession(request.getSession().getId(), userProfile);
-        Gson gson = new Gson();
-        String json = gson.toJson(userProfile);
-        response.getWriter().println(json);
-        response.setStatus(HttpServletResponse.SC_OK);
+            accountService.addSession(request.getSession().getId(), userProfile);
+            Gson gson = new Gson();
+            String json = gson.toJson(userProfile);
+            response.getWriter().println(json);
+            response.setStatus(HttpServletResponse.SC_OK);
+        }
+        catch (DbException e) {}
     }
 
     public void doDelete(HttpServletRequest request, HttpServletResponse response)

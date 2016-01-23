@@ -38,6 +38,10 @@
         </plugins>
     </build>
 
+    <properties>
+        <com.h2database.h2.version>1.4.187</com.h2database.h2.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.freemarker</groupId>
@@ -67,6 +71,11 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.35</version>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>${com.h2database.h2.version}</version>
         </dependency>
 
     </dependencies>

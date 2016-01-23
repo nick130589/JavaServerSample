@@ -2,6 +2,8 @@ package servlets;
 
 import accounts.AccountService;
 import accounts.UserProfile;
+import dbService.DbException;
+import dbService.dataSets.UserDataSet;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -28,8 +30,13 @@ public class SignUpServlet extends HttpServlet {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
         else {
-            UserProfile profile = new UserProfile(login, pass, login);
-            accountService.addNewUser(profile);
+            UserProfile user = new UserProfile(login, pass);
+            try {
+                accountService.addNewUser(user);
+            }
+            catch (DbException e) {
+                e.printStackTrace();
+            }
             response.setContentType("text/html;charset=utf-8");
             response.setStatus(HttpServletResponse.SC_OK);
         }
